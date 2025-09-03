@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h2>Modules — {{ project.name }}</h2>
+    <a class="link-secondary" href="{{ url_for('list_projects', client_id=project.client_id) }}">Back to Projects</a>
+  </div>
+  <a href="{{ url_for('create_module', project_id=project.id) }}" class="btn btn-primary">New Module</a>
+</div>
+
+<div class="card">
+  <div class="card-body p-0">
+    <table class="table mb-0 table-hover align-middle">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th class="text-end">Totals (Est/Actual)</th>
+        <th style="width:280px"></th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for m in modules %}
+        {% set total_est = (m.entries | map(attribute='estimated_efforts') | sum) or 0 %}
+        {% set total_act = (m.entries | map(attribute='actual_efforts') | sum) or 0 %}
+        <tr>
+          <td><a href="{{ url_for('list_entries', module_id=m.id) }}">{{ m.name }}</a></td>
+          <td>{{ m.description }}</td>
+          <td class="text-end"><span class="badge bg-secondary">{{ '%.2f' % total_est }} / {{ '%.2f' % total_act }}</span></td>
+          <td class="text-end">
+            <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('list_entries', module_id=m.id) }}">Entries</a>
+            <a class="btn btn-sm btn-outline-primary" href="{{ url_for('edit_module', module_id=m.id) }}">Edit</a>
+            <form class="d-inline" method="post" action="{{ url_for('delete_module', module_id=m.id) }}" onsubmit="return confirm('Delete module?')">
+              <button class="btn btn-sm btn-outline-danger">Delete</button>
+            </form>
+          </td>
+        </tr>
+      {% else %}
+        <tr><td colspan="4" class="text-center text-muted">No modules yet.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
