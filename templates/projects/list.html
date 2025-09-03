@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h2>Projects — {{ client.name }}</h2>
+    <a class="link-secondary" href="{{ url_for('list_clients') }}">Back to Clients</a>
+  </div>
+  <a href="{{ url_for('create_project', client_id=client.id) }}" class="btn btn-primary">New Project</a>
+</div>
+
+<div class="card">
+  <div class="card-body p-0">
+    <table class="table mb-0 table-hover align-middle">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th style="width:260px"></th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for p in projects %}
+        <tr>
+          <td><a href="{{ url_for('list_modules', project_id=p.id) }}">{{ p.name }}</a></td>
+          <td>{{ p.description }}</td>
+          <td class="text-end">
+            <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('list_modules', project_id=p.id) }}">Modules</a>
+            <a class="btn btn-sm btn-outline-primary" href="{{ url_for('edit_project', project_id=p.id) }}">Edit</a>
+            <form class="d-inline" method="post" action="{{ url_for('delete_project', project_id=p.id) }}" onsubmit="return confirm('Delete project?')">
+              <button class="btn btn-sm btn-outline-danger">Delete</button>
+            </form>
+          </td>
+        </tr>
+      {% else %}
+        <tr><td colspan="3" class="text-center text-muted">No projects yet.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
